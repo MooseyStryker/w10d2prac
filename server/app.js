@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require('dotenv').config();
 
 const dogRouter = require("./routes/dogs");
 
@@ -34,19 +35,33 @@ app.get("/test-error", async (req, res) => {
   throw new Error("Hello World!");
 });
 
+// 404 method not found
 app.use((req, res, next) => {
   const noMethodFound = new Error("The requested resource couldn't be found.");
   noMethodFound.statusCode = 404;
   next(noMethodFound);
 });
 
+// Error handling middleware
 app.use((err, req, res, next) => {
+  console.log(err.stack)
+  const stack = err.stack
   const statusCode = err.statusCode || 500;
   res.status(statusCode);
-  res.json({
-    message: err.message,
-    statusCode,
-  });
+  if (process.env.NODE_ENV === 'Production') {
+    res.json({
+      message: err.message || "Something went wrong bucko",
+      statusCode
+    });
+  }
+  if (process.env.NODE_ENV !== 'Production'){
+    res.json({
+      message: err.message || "Something went wrong bucko",
+      statusCode,
+      stack
+    });
+
+  }
 });
 
 const port = 5000;
