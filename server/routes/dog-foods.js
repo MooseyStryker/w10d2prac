@@ -1,4 +1,4 @@
-// ------------------------------  SERVER DATA ------------------------------  
+// ------------------------------  SERVER DATA ------------------------------
 
 let nextFoodId = 1;
 function getNewFoodId() {
@@ -11,21 +11,21 @@ const foods = [
   {
     foodId: getNewFoodId(),
     name: "Kibble",
-    dogId: 1
+    dogId: 1,
   },
   {
     foodId: getNewFoodId(),
     name: "Bone",
-    dogId: 1
+    dogId: 1,
   },
   {
     foodId: getNewFoodId(),
     name: "Biscuit",
-    dogId: 2
-  }
+    dogId: 2,
+  },
 ];
 
-// ------------------------------  MIDDLEWARES ------------------------------ 
+// ------------------------------  MIDDLEWARES ------------------------------
 
 const validateFoodInfo = (req, res, next) => {
   if (!req.body || !req.body.name) {
@@ -36,12 +36,12 @@ const validateFoodInfo = (req, res, next) => {
   next();
 };
 
-// ------------------------------  ROUTE HANDLERS ------------------------------  
+// ------------------------------  ROUTE HANDLERS ------------------------------
 
 // GET /dogs/:dogId/foods
 const getFoodsByDogId = (req, res) => {
   const { dogId } = req.params;
-  res.json(foods.filter(food => food.dogId == dogId));
+  res.json(foods.filter((food) => food.dogId == dogId));
 };
 
 // POST /dogs/:dogId/foods
@@ -51,12 +51,24 @@ const createFood = (req, res) => {
   const newFood = {
     foodId: getNewFoodId(),
     name,
-    dogId
+    dogId,
   };
   foods.push(newFood);
   res.json(newFood);
 };
 
-// ------------------------------  ROUTER ------------------------------  
+// ------------------------------  ROUTER ------------------------------
 
-// Your code here 
+const express = require("express");
+const router = express.Router();
+const foodsRouter = express.Router({ mergeParams: true });
+
+router.use(validateFoodInfo);
+
+router.use("/", foodsRouter);
+
+router.get("/:dogId/foods", getFoodsByDogId);
+
+router.post("/:dogId/foods", createFood);
+
+module.exports = router;
