@@ -62,10 +62,13 @@ const createFood = (req, res) => {
 const express = require("express");
 const router = express.Router();
 const foodsRouter = express.Router({ mergeParams: true });
-
-router.use(validateFoodInfo);
+const { validateDogInfo } = require("./dogs");
 
 router.use("/", foodsRouter);
+
+router.use(validateDogInfo);
+
+router.use(validateFoodInfo);
 
 router.get("/:dogId/foods", getFoodsByDogId);
 

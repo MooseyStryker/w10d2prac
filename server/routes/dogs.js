@@ -105,3 +105,4 @@ router.put("/:dogId", updateDog);
 router.delete("/:dogId", deleteDog);
 
 module.exports = router;
+module.exports.validateDogInfo = validateDogInfo;
